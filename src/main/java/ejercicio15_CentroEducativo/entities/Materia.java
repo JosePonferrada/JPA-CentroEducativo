@@ -1,9 +1,12 @@
 package ejercicio15_CentroEducativo.entities;
 
+import java.util.List;
+
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 @Entity
@@ -15,6 +18,10 @@ public class Materia {
 	private int cursoId;
 	private String nombre;
 	private String acronimo;
+	
+	@OneToMany(mappedBy="materia")
+	private List<ValoracionMateria> vm;
+	
 	
 	public Materia() {
 		super();
@@ -50,6 +57,14 @@ public class Materia {
 
 	public void setAcronimo(String acronimo) {
 		this.acronimo = acronimo;
+	}
+
+	public List<ValoracionMateria> getVm() {
+		return vm;
+	}
+
+	public void setVm(List<ValoracionMateria> vm) {
+		this.vm = vm;
 	}
 	
 }

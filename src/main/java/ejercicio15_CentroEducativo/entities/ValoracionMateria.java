@@ -1,10 +1,15 @@
 package ejercicio15_CentroEducativo.entities;
 
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
+
 
 @Entity
 @Table(name = "valoracionmateria")
@@ -13,9 +18,19 @@ public class ValoracionMateria {
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private int id;
-	private int idProfesor;
-	private int idEstudiante;
-	private int idMateria;
+	
+	@ManyToOne(fetch=FetchType.LAZY)	
+	@JoinColumn(name="idprofesor")
+	private Profesor profesor;
+	
+	@ManyToOne(fetch=FetchType.LAZY)	
+	@JoinColumn(name="idestudiante")
+	private Estudiante estudiante;
+	
+	@ManyToOne(fetch=FetchType.LAZY)	
+	@JoinColumn(name="idmateria")
+	private Materia materia;
+	
 	private float valoracion;
 	
 	public ValoracionMateria() {
@@ -30,36 +45,36 @@ public class ValoracionMateria {
 		this.id = id;
 	}
 
-	public int getIdProfesor() {
-		return idProfesor;
-	}
-
-	public void setIdProfesor(int idProfesor) {
-		this.idProfesor = idProfesor;
-	}
-
-	public int getIdEstudiante() {
-		return idEstudiante;
-	}
-
-	public void setIdEstudiante(int idEstudiante) {
-		this.idEstudiante = idEstudiante;
-	}
-
-	public int getIdMateria() {
-		return idMateria;
-	}
-
-	public void setIdMateria(int idMateria) {
-		this.idMateria = idMateria;
-	}
-
 	public float getValoracion() {
 		return valoracion;
 	}
 
 	public void setValoracion(float valoracion) {
 		this.valoracion = valoracion;
+	}
+
+	public Profesor getProfesor() {
+		return profesor;
+	}
+
+	public void setProfesor(Profesor profesor) {
+		this.profesor = profesor;
+	}
+
+	public Estudiante getEstudiante() {
+		return estudiante;
+	}
+
+	public void setEstudiante(Estudiante estudiante) {
+		this.estudiante = estudiante;
+	}
+
+	public Materia getMateria() {
+		return materia;
+	}
+
+	public void setMateria(Materia materia) {
+		this.materia = materia;
 	}
 	
 }
