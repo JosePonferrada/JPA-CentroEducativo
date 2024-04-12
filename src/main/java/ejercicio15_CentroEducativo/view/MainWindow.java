@@ -5,10 +5,16 @@ import java.awt.EventQueue;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
+
+import ejercicio15_CentroEducativo.controladores.ControladorMateria;
+import ejercicio15_CentroEducativo.entities.Materia;
+import ejercicio15_CentroEducativo.entities.Profesor;
+
 import java.awt.GridBagLayout;
 import javax.swing.JButton;
 import java.awt.GridBagConstraints;
 import java.awt.Insets;
+import java.util.List;
 import java.awt.Color;
 import javax.swing.JLabel;
 import javax.swing.JComboBox;
@@ -18,7 +24,11 @@ public class MainWindow extends JFrame {
 
 	private static final long serialVersionUID = 1L;
 	private JPanel contentPane;
-
+	
+	private JComboBox<Integer> jcbNota;
+	private JComboBox<Profesor> jcbProfesor;
+	private JComboBox<Materia> jcbMateria;
+	
 	/**
 	 * Launch the application.
 	 */
@@ -40,7 +50,7 @@ public class MainWindow extends JFrame {
 	 */
 	public MainWindow() {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setBounds(100, 100, 603, 538);
+		setBounds(100, 100, 627, 543);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 
@@ -75,13 +85,13 @@ public class MainWindow extends JFrame {
 		gbc_lblMateria.gridy = 0;
 		panel_1.add(lblMateria, gbc_lblMateria);
 		
-		JComboBox comboBox = new JComboBox();
-		GridBagConstraints gbc_comboBox = new GridBagConstraints();
-		gbc_comboBox.insets = new Insets(0, 0, 5, 0);
-		gbc_comboBox.fill = GridBagConstraints.HORIZONTAL;
-		gbc_comboBox.gridx = 1;
-		gbc_comboBox.gridy = 0;
-		panel_1.add(comboBox, gbc_comboBox);
+		jcbMateria = new JComboBox<Materia>();
+		GridBagConstraints gbc_jcbMateria = new GridBagConstraints();
+		gbc_jcbMateria.insets = new Insets(0, 0, 5, 0);
+		gbc_jcbMateria.fill = GridBagConstraints.HORIZONTAL;
+		gbc_jcbMateria.gridx = 1;
+		gbc_jcbMateria.gridy = 0;
+		panel_1.add(jcbMateria, gbc_jcbMateria);
 		
 		JLabel lblProfesor = new JLabel("Profesor:");
 		GridBagConstraints gbc_lblProfesor = new GridBagConstraints();
@@ -91,13 +101,13 @@ public class MainWindow extends JFrame {
 		gbc_lblProfesor.gridy = 1;
 		panel_1.add(lblProfesor, gbc_lblProfesor);
 		
-		JComboBox comboBox_1 = new JComboBox();
-		GridBagConstraints gbc_comboBox_1 = new GridBagConstraints();
-		gbc_comboBox_1.insets = new Insets(0, 0, 5, 0);
-		gbc_comboBox_1.fill = GridBagConstraints.HORIZONTAL;
-		gbc_comboBox_1.gridx = 1;
-		gbc_comboBox_1.gridy = 1;
-		panel_1.add(comboBox_1, gbc_comboBox_1);
+		jcbProfesor = new JComboBox<Profesor>();
+		GridBagConstraints gbc_jcbProfesor = new GridBagConstraints();
+		gbc_jcbProfesor.insets = new Insets(0, 0, 5, 0);
+		gbc_jcbProfesor.fill = GridBagConstraints.HORIZONTAL;
+		gbc_jcbProfesor.gridx = 1;
+		gbc_jcbProfesor.gridy = 1;
+		panel_1.add(jcbProfesor, gbc_jcbProfesor);
 		
 		JLabel lblNota = new JLabel("Nota:");
 		GridBagConstraints gbc_lblNota = new GridBagConstraints();
@@ -107,19 +117,24 @@ public class MainWindow extends JFrame {
 		gbc_lblNota.gridy = 2;
 		panel_1.add(lblNota, gbc_lblNota);
 		
-		JComboBox comboBox_2 = new JComboBox();
-		GridBagConstraints gbc_comboBox_2 = new GridBagConstraints();
-		gbc_comboBox_2.insets = new Insets(0, 0, 5, 0);
-		gbc_comboBox_2.fill = GridBagConstraints.HORIZONTAL;
-		gbc_comboBox_2.gridx = 1;
-		gbc_comboBox_2.gridy = 2;
-		panel_1.add(comboBox_2, gbc_comboBox_2);
+		jcbNota = new JComboBox<Integer>();
+		int i = 0;
+		for(i = 0; i <= 10; i++) {
+			jcbNota.addItem(i);
+		}
+		GridBagConstraints gbc_jcbNota = new GridBagConstraints();
+		gbc_jcbNota.insets = new Insets(0, 0, 5, 0);
+		gbc_jcbNota.fill = GridBagConstraints.HORIZONTAL;
+		gbc_jcbNota.gridx = 1;
+		gbc_jcbNota.gridy = 2;
+		panel_1.add(jcbNota, gbc_jcbNota);
 		
-		JButton btnNewButton_1 = new JButton("New button");
-		GridBagConstraints gbc_btnNewButton_1 = new GridBagConstraints();
-		gbc_btnNewButton_1.gridx = 1;
-		gbc_btnNewButton_1.gridy = 3;
-		panel_1.add(btnNewButton_1, gbc_btnNewButton_1);
+		JButton btnActualizar = new JButton("Botón actualizar alumnado");
+		GridBagConstraints gbc_btnActualizar = new GridBagConstraints();
+		gbc_btnActualizar.anchor = GridBagConstraints.EAST;
+		gbc_btnActualizar.gridx = 1;
+		gbc_btnActualizar.gridy = 3;
+		panel_1.add(btnActualizar, gbc_btnActualizar);
 		
 		JPanel panel = new JPanel();
 		panel.setBackground(new Color(145, 65, 172));
@@ -150,19 +165,19 @@ public class MainWindow extends JFrame {
 		gbc_lblAlumnosSeleccionados.gridy = 0;
 		panel.add(lblAlumnosSeleccionados, gbc_lblAlumnosSeleccionados);
 		
-		JList list_1 = new JList();
-		GridBagConstraints gbc_list_1 = new GridBagConstraints();
-		gbc_list_1.insets = new Insets(0, 0, 0, 5);
-		gbc_list_1.fill = GridBagConstraints.BOTH;
-		gbc_list_1.gridx = 0;
-		gbc_list_1.gridy = 1;
-		panel.add(list_1, gbc_list_1);
+		JList listaNoSeleccionado = new JList();
+		GridBagConstraints gbc_listaNoSeleccionado = new GridBagConstraints();
+		gbc_listaNoSeleccionado.insets = new Insets(0, 0, 0, 5);
+		gbc_listaNoSeleccionado.fill = GridBagConstraints.BOTH;
+		gbc_listaNoSeleccionado.gridx = 0;
+		gbc_listaNoSeleccionado.gridy = 1;
+		panel.add(listaNoSeleccionado, gbc_listaNoSeleccionado);
 		
 		JPanel panel_2 = new JPanel();
 		panel_2.setBackground(new Color(255, 163, 72));
 		GridBagConstraints gbc_panel_2 = new GridBagConstraints();
-		gbc_panel_2.insets = new Insets(0, 0, 0, 5);
 		gbc_panel_2.fill = GridBagConstraints.HORIZONTAL;
+		gbc_panel_2.insets = new Insets(0, 0, 0, 5);
 		gbc_panel_2.gridx = 1;
 		gbc_panel_2.gridy = 1;
 		panel.add(panel_2, gbc_panel_2);
@@ -173,46 +188,60 @@ public class MainWindow extends JFrame {
 		gbl_panel_2.rowWeights = new double[]{0.0, 0.0, 0.0, 0.0, Double.MIN_VALUE};
 		panel_2.setLayout(gbl_panel_2);
 		
-		JButton btnNewButton_2 = new JButton("New button");
-		GridBagConstraints gbc_btnNewButton_2 = new GridBagConstraints();
-		gbc_btnNewButton_2.insets = new Insets(0, 0, 5, 0);
-		gbc_btnNewButton_2.gridx = 0;
-		gbc_btnNewButton_2.gridy = 0;
-		panel_2.add(btnNewButton_2, gbc_btnNewButton_2);
+		JButton btnDeselectAll = new JButton("<<");
+		GridBagConstraints gbc_btnDeselectAll = new GridBagConstraints();
+		gbc_btnDeselectAll.insets = new Insets(0, 0, 5, 0);
+		gbc_btnDeselectAll.gridx = 0;
+		gbc_btnDeselectAll.gridy = 0;
+		panel_2.add(btnDeselectAll, gbc_btnDeselectAll);
 		
-		JButton btnNewButton_3 = new JButton("New button");
-		GridBagConstraints gbc_btnNewButton_3 = new GridBagConstraints();
-		gbc_btnNewButton_3.insets = new Insets(0, 0, 5, 0);
-		gbc_btnNewButton_3.gridx = 0;
-		gbc_btnNewButton_3.gridy = 1;
-		panel_2.add(btnNewButton_3, gbc_btnNewButton_3);
+		JButton btnDeselectOne = new JButton("<");
+		GridBagConstraints gbc_btnDeselectOne = new GridBagConstraints();
+		gbc_btnDeselectOne.insets = new Insets(0, 0, 5, 0);
+		gbc_btnDeselectOne.gridx = 0;
+		gbc_btnDeselectOne.gridy = 1;
+		panel_2.add(btnDeselectOne, gbc_btnDeselectOne);
 		
-		JButton btnNewButton_4 = new JButton("New button");
-		GridBagConstraints gbc_btnNewButton_4 = new GridBagConstraints();
-		gbc_btnNewButton_4.insets = new Insets(0, 0, 5, 0);
-		gbc_btnNewButton_4.gridx = 0;
-		gbc_btnNewButton_4.gridy = 2;
-		panel_2.add(btnNewButton_4, gbc_btnNewButton_4);
+		JButton btnSelectOne = new JButton(">");
+		GridBagConstraints gbc_btnSelectOne = new GridBagConstraints();
+		gbc_btnSelectOne.insets = new Insets(0, 0, 5, 0);
+		gbc_btnSelectOne.gridx = 0;
+		gbc_btnSelectOne.gridy = 2;
+		panel_2.add(btnSelectOne, gbc_btnSelectOne);
 		
-		JButton btnNewButton_5 = new JButton("New button");
-		GridBagConstraints gbc_btnNewButton_5 = new GridBagConstraints();
-		gbc_btnNewButton_5.gridx = 0;
-		gbc_btnNewButton_5.gridy = 3;
-		panel_2.add(btnNewButton_5, gbc_btnNewButton_5);
+		JButton btnSelectAll = new JButton(">>");
+		GridBagConstraints gbc_btnSelectAll = new GridBagConstraints();
+		gbc_btnSelectAll.gridx = 0;
+		gbc_btnSelectAll.gridy = 3;
+		panel_2.add(btnSelectAll, gbc_btnSelectAll);
 		
-		JList list = new JList();
-		GridBagConstraints gbc_list = new GridBagConstraints();
-		gbc_list.fill = GridBagConstraints.BOTH;
-		gbc_list.gridx = 2;
-		gbc_list.gridy = 1;
-		panel.add(list, gbc_list);
+		JList listaSeleccionado = new JList();
+		GridBagConstraints gbc_listaSeleccionado = new GridBagConstraints();
+		gbc_listaSeleccionado.fill = GridBagConstraints.BOTH;
+		gbc_listaSeleccionado.gridx = 2;
+		gbc_listaSeleccionado.gridy = 1;
+		panel.add(listaSeleccionado, gbc_listaSeleccionado);
 		
-		JButton btnNewButton = new JButton("Guardar las notas de todos los alumnos seleccionados");
-		GridBagConstraints gbc_btnNewButton = new GridBagConstraints();
-		gbc_btnNewButton.anchor = GridBagConstraints.EAST;
-		gbc_btnNewButton.gridx = 0;
-		gbc_btnNewButton.gridy = 2;
-		contentPane.add(btnNewButton, gbc_btnNewButton);
+		JButton btnSaveSelected = new JButton("Guardar las notas de todos los alumnos seleccionados");
+		GridBagConstraints gbc_btnSaveSelected = new GridBagConstraints();
+		gbc_btnSaveSelected.anchor = GridBagConstraints.EAST;
+		gbc_btnSaveSelected.gridx = 0;
+		gbc_btnSaveSelected.gridy = 2;
+		contentPane.add(btnSaveSelected, gbc_btnSaveSelected);
+		
+		loadAllMaterias(); //Cargamos todas las materias al iniciar
+		
 	}
 
+	private void loadAllMaterias() {
+		
+		List<Materia> materias = (List<Materia>) ControladorMateria.getInstance().findAll();
+		
+		for (Materia materia : materias) {
+//			System.out.println(materia);
+			this.jcbMateria.addItem(materia);
+		}
+		
+	}
+	
 }

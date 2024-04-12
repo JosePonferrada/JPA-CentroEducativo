@@ -11,7 +11,7 @@ import javax.persistence.Table;
 
 @Entity
 @Table(name = "materia")
-public class Materia {
+public class Materia extends Entidad{
 
 	@Id
 	private int id;
@@ -65,6 +65,11 @@ public class Materia {
 
 	public void setVm(List<ValoracionMateria> vm) {
 		this.vm = vm;
+	}
+
+	@Override
+	public String toString() {
+		return nombre;
 	}
 	
 }

@@ -13,7 +13,7 @@ import javax.persistence.Table;
 
 @Entity
 @Table(name = "valoracionmateria")
-public class ValoracionMateria {
+public class ValoracionMateria extends Entidad{
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
