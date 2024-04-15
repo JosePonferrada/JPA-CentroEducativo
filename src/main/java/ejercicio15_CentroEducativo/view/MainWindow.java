@@ -6,11 +6,18 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 
+import ejercicio15_CentroEducativo.controladores.ControladorEstudiante;
 import ejercicio15_CentroEducativo.controladores.ControladorMateria;
+import ejercicio15_CentroEducativo.controladores.ControladorProfesor;
+import ejercicio15_CentroEducativo.controladores.ControladorValoracionMateria;
+import ejercicio15_CentroEducativo.entities.Estudiante;
 import ejercicio15_CentroEducativo.entities.Materia;
 import ejercicio15_CentroEducativo.entities.Profesor;
+import ejercicio15_CentroEducativo.entities.ValoracionMateria;
 
 import java.awt.GridBagLayout;
+
+import javax.swing.DefaultListModel;
 import javax.swing.JButton;
 import java.awt.GridBagConstraints;
 import java.awt.Insets;
@@ -19,6 +26,8 @@ import java.awt.Color;
 import javax.swing.JLabel;
 import javax.swing.JComboBox;
 import javax.swing.JList;
+import java.awt.event.ActionListener;
+import java.awt.event.ActionEvent;
 
 public class MainWindow extends JFrame {
 
@@ -28,6 +37,18 @@ public class MainWindow extends JFrame {
 	private JComboBox<Integer> jcbNota;
 	private JComboBox<Profesor> jcbProfesor;
 	private JComboBox<Materia> jcbMateria;
+	private JList listaSeleccionado;
+	private JList listaNoSeleccionado;
+	
+	private List<Estudiante> listAllEstudiantes = 
+			(List<Estudiante>) ControladorEstudiante.getInstance().findAll();
+	
+	private DefaultListModel<Estudiante> listModelEstudiantesSelected = null;
+	private DefaultListModel<Estudiante> listModelEstudiantesNotSelected = null;
+	
+	private Materia matActual;
+	private Profesor profActual;
+	private int notaActual;
 	
 	/**
 	 * Launch the application.
@@ -130,6 +151,11 @@ public class MainWindow extends JFrame {
 		panel_1.add(jcbNota, gbc_jcbNota);
 		
 		JButton btnActualizar = new JButton("Botón actualizar alumnado");
+		btnActualizar.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				loadAllEstudiantesInJLists();
+			}
+		});
 		GridBagConstraints gbc_btnActualizar = new GridBagConstraints();
 		gbc_btnActualizar.anchor = GridBagConstraints.EAST;
 		gbc_btnActualizar.gridx = 1;
@@ -165,7 +191,7 @@ public class MainWindow extends JFrame {
 		gbc_lblAlumnosSeleccionados.gridy = 0;
 		panel.add(lblAlumnosSeleccionados, gbc_lblAlumnosSeleccionados);
 		
-		JList listaNoSeleccionado = new JList();
+		listaNoSeleccionado = new JList(this.getDefaultListModelNotSelected());
 		GridBagConstraints gbc_listaNoSeleccionado = new GridBagConstraints();
 		gbc_listaNoSeleccionado.insets = new Insets(0, 0, 0, 5);
 		gbc_listaNoSeleccionado.fill = GridBagConstraints.BOTH;
@@ -215,7 +241,7 @@ public class MainWindow extends JFrame {
 		gbc_btnSelectAll.gridy = 3;
 		panel_2.add(btnSelectAll, gbc_btnSelectAll);
 		
-		JList listaSeleccionado = new JList();
+		listaSeleccionado = new JList(this.getDefaultListModelSelected());
 		GridBagConstraints gbc_listaSeleccionado = new GridBagConstraints();
 		gbc_listaSeleccionado.fill = GridBagConstraints.BOTH;
 		gbc_listaSeleccionado.gridx = 2;
@@ -231,6 +257,8 @@ public class MainWindow extends JFrame {
 		
 		loadAllMaterias(); //Cargamos todas las materias al iniciar
 		
+		loadAllProfesores();
+		
 	}
 
 	private void loadAllMaterias() {
@@ -243,5 +271,55 @@ public class MainWindow extends JFrame {
 		}
 		
 	}
+	
+	private void loadAllProfesores() {
+		
+		List<Profesor> profesores = (List<Profesor>) ControladorProfesor.getInstance().findAll();
+		
+		for (Profesor profesor : profesores) {
+//			System.out.println(materia);
+			this.jcbProfesor.addItem(profesor);
+		}
+		
+	}
+	
+	private DefaultListModel getDefaultListModelSelected () {
+		this.listModelEstudiantesSelected = new DefaultListModel<Estudiante>();
+		return this.listModelEstudiantesSelected;
+	}
+	
+	private DefaultListModel getDefaultListModelNotSelected () {
+		this.listModelEstudiantesNotSelected = new DefaultListModel<Estudiante>();
+		return this.listModelEstudiantesNotSelected;
+	}
+
+	private void loadAllEstudiantesInJLists() {
+		this.listModelEstudiantesNotSelected.clear();
+		this.listModelEstudiantesSelected.clear();
+		
+		this.matActual = (Materia) this.jcbMateria.getSelectedItem();
+		this.profActual = (Profesor) this.jcbProfesor.getSelectedItem();
+		this.notaActual = (int) this.jcbNota.getSelectedItem();
+
+		
+		
+		for (Estudiante estudiante : listAllEstudiantes) {
+			ValoracionMateria vm = 
+					ControladorValoracionMateria.getInstance()
+					.findVMByMateriaProfesorAndEstudiante(matActual, profActual, estudiante);
+			
+			if(vm != null && vm.getValoracion() == this.notaActual) {
+				//Si existe con la misma nota que tiene el alumno lo metemos en la lista de seleccionados
+				this.listModelEstudiantesSelected.addElement(estudiante);
+				
+			} else {
+				this.listModelEstudiantesNotSelected.addElement(estudiante);
+				
+			}
+		}
+	
+	}
+	
+	
 	
 }

@@ -66,5 +66,10 @@ public class Estudiante extends Entidad{
 	public void setVm(List<ValoracionMateria> vm) {
 		this.vm = vm;
 	}
+
+	@Override
+	public String toString() {
+		return nombre + " " + apellido1 + " " + apellido2;
+	}
 	
 }
