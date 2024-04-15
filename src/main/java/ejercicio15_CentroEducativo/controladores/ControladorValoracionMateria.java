@@ -49,4 +49,34 @@ public class ControladorValoracionMateria extends SuperControlador{
 		}
 	}
 	
+	public void insertMark(Materia materia, Profesor profesor, Estudiante estudiante, int mark) {
+		
+		EntityManager em = getEntityManager();
+		
+		ValoracionMateria vm = new ValoracionMateria();
+		
+		vm.setIdMateria(materia.getId());
+		vm.setIdProfesor(profesor.getId());
+		vm.setIdEstudiante(estudiante.getId());
+		vm.setValoracion(mark);
+		
+		em.getTransaction().begin();
+		em.persist(vm);
+		em.getTransaction().commit();
+		
+		em.close();
+	}
+	
+	public void modifyMark(ValoracionMateria vm, int mark) {
+		
+		EntityManager em = getEntityManager();
+		
+		em.getTransaction().begin();
+		vm.setValoracion(mark);
+		em.merge(vm);
+		em.getTransaction().commit();
+		
+		em.close();
+	}
+	
 }

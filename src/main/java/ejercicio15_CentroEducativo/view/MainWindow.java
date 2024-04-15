@@ -215,6 +215,11 @@ public class MainWindow extends JFrame {
 		panel_2.setLayout(gbl_panel_2);
 		
 		JButton btnDeselectAll = new JButton("<<");
+		btnDeselectAll.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				moveAllSelectedStudentsToNotSelected(listaSeleccionado, listaNoSeleccionado);
+			}
+		});
 		GridBagConstraints gbc_btnDeselectAll = new GridBagConstraints();
 		gbc_btnDeselectAll.insets = new Insets(0, 0, 5, 0);
 		gbc_btnDeselectAll.gridx = 0;
@@ -222,6 +227,11 @@ public class MainWindow extends JFrame {
 		panel_2.add(btnDeselectAll, gbc_btnDeselectAll);
 		
 		JButton btnDeselectOne = new JButton("<");
+		btnDeselectOne.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				moveSelectedStudentsToNotSelected(listaSeleccionado, listaNoSeleccionado);
+			}
+		});
 		GridBagConstraints gbc_btnDeselectOne = new GridBagConstraints();
 		gbc_btnDeselectOne.insets = new Insets(0, 0, 5, 0);
 		gbc_btnDeselectOne.gridx = 0;
@@ -229,6 +239,11 @@ public class MainWindow extends JFrame {
 		panel_2.add(btnDeselectOne, gbc_btnDeselectOne);
 		
 		JButton btnSelectOne = new JButton(">");
+		btnSelectOne.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				moveNotSelectedStudentsToSelected(listaNoSeleccionado, listaSeleccionado);
+			}
+		});
 		GridBagConstraints gbc_btnSelectOne = new GridBagConstraints();
 		gbc_btnSelectOne.insets = new Insets(0, 0, 5, 0);
 		gbc_btnSelectOne.gridx = 0;
@@ -236,6 +251,11 @@ public class MainWindow extends JFrame {
 		panel_2.add(btnSelectOne, gbc_btnSelectOne);
 		
 		JButton btnSelectAll = new JButton(">>");
+		btnSelectAll.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				moveAllNotSelectedStudentsToSelected(listaNoSeleccionado, listaSeleccionado);
+			}
+		});
 		GridBagConstraints gbc_btnSelectAll = new GridBagConstraints();
 		gbc_btnSelectAll.gridx = 0;
 		gbc_btnSelectAll.gridy = 3;
@@ -320,6 +340,58 @@ public class MainWindow extends JFrame {
 	
 	}
 	
+	private void moveAllSelectedStudentsToNotSelected(JList<Estudiante> jListOrigen, JList<Estudiante> jListDestino){
+		DefaultListModel<Estudiante> listaOrigen = this.listModelEstudiantesSelected;
+		DefaultListModel<Estudiante> listaDestino = this.listModelEstudiantesNotSelected;
+		
+		for (int i = 0; i < listaOrigen.getSize(); i++) {
+			Estudiante estudiante = listaOrigen.getElementAt(i);
+			listaDestino.addElement(estudiante);
+		}
+		
+		listaOrigen.removeAllElements();
+	}
 	
+	private void moveAllNotSelectedStudentsToSelected(JList<Estudiante> jListOrigen, JList<Estudiante> jListDestino){
+		DefaultListModel<Estudiante> listaOrigen = this.listModelEstudiantesNotSelected;
+		DefaultListModel<Estudiante> listaDestino = this.listModelEstudiantesSelected;
+		
+		for (int i = 0; i < listaOrigen.getSize(); i++) {
+			Estudiante estudiante = listaOrigen.getElementAt(i);
+			listaDestino.addElement(estudiante);
+		}
+		
+		listaOrigen.removeAllElements();
+	}
+	
+	private void moveSelectedStudentsToNotSelected(JList<Estudiante> jListOrigen, JList<Estudiante> jListDestino) {
+		DefaultListModel<Estudiante> listaOrigen = this.listModelEstudiantesSelected;
+		DefaultListModel<Estudiante> listaDestino = this.listModelEstudiantesNotSelected;
+		
+		// De la lista de origen pillamos los que están seleccionados y los metemos en otra lista de seleccionados.
+		List<Estudiante> selectedStudents = jListOrigen.getSelectedValuesList();
+		for (Estudiante estudiante : selectedStudents) {
+			listaOrigen.removeElement(estudiante);
+			listaDestino.addElement(estudiante);
+		}
+		
+	}
+	
+	private void moveNotSelectedStudentsToSelected(JList<Estudiante> jListOrigen, JList<Estudiante> jListDestino) {
+		DefaultListModel<Estudiante> listaOrigen = this.listModelEstudiantesNotSelected;
+		DefaultListModel<Estudiante> listaDestino = this.listModelEstudiantesSelected;
+		
+		// De la lista de origen pillamos los que están seleccionados y los metemos en otra lista de seleccionados.
+		List<Estudiante> selectedStudents = jListOrigen.getSelectedValuesList();
+		for (Estudiante estudiante : selectedStudents) {
+			listaOrigen.removeElement(estudiante);
+			listaDestino.addElement(estudiante);
+		}
+		
+	}
+	
+	public void saveStudents() {
+		
+	}
 	
 }

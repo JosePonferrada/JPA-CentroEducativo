@@ -19,17 +19,11 @@ public class ValoracionMateria extends Entidad{
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private int id;
 	
-	@ManyToOne(fetch=FetchType.LAZY)	
-	@JoinColumn(name="idprofesor")
-	private Profesor profesor;
+	private int idProfesor;
 	
-	@ManyToOne(fetch=FetchType.LAZY)	
-	@JoinColumn(name="idestudiante")
-	private Estudiante estudiante;
+	private int idEstudiante;
 	
-	@ManyToOne(fetch=FetchType.LAZY)	
-	@JoinColumn(name="idmateria")
-	private Materia materia;
+	private int idMateria;
 	
 	private float valoracion;
 	
@@ -53,28 +47,29 @@ public class ValoracionMateria extends Entidad{
 		this.valoracion = valoracion;
 	}
 
-	public Profesor getProfesor() {
-		return profesor;
+	public int getIdProfesor() {
+		return idProfesor;
 	}
 
-	public void setProfesor(Profesor profesor) {
-		this.profesor = profesor;
+	public void setIdProfesor(int idProfesor) {
+		this.idProfesor = idProfesor;
 	}
 
-	public Estudiante getEstudiante() {
-		return estudiante;
+	public int getIdEstudiante() {
+		return idEstudiante;
 	}
 
-	public void setEstudiante(Estudiante estudiante) {
-		this.estudiante = estudiante;
+	public void setIdEstudiante(int idEstudiante) {
+		this.idEstudiante = idEstudiante;
 	}
 
-	public Materia getMateria() {
-		return materia;
+	public int getIdMateria() {
+		return idMateria;
 	}
 
-	public void setMateria(Materia materia) {
-		this.materia = materia;
+	public void setIdMateria(int idMateria) {
+		this.idMateria = idMateria;
 	}
+
 	
 }

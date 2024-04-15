@@ -19,9 +19,6 @@ public class Materia extends Entidad{
 	private String nombre;
 	private String acronimo;
 	
-	@OneToMany(mappedBy="materia")
-	private List<ValoracionMateria> vm;
-	
 	
 	public Materia() {
 		super();
@@ -57,14 +54,6 @@ public class Materia extends Entidad{
 
 	public void setAcronimo(String acronimo) {
 		this.acronimo = acronimo;
-	}
-
-	public List<ValoracionMateria> getVm() {
-		return vm;
-	}
-
-	public void setVm(List<ValoracionMateria> vm) {
-		this.vm = vm;
 	}
 
 	@Override

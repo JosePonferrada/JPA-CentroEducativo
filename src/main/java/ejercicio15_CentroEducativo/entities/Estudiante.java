@@ -19,9 +19,7 @@ public class Estudiante extends Entidad{
 	private String apellido1;
 	private String apellido2;
 	
-	@OneToMany(mappedBy="estudiante")
-	private List<ValoracionMateria> vm;
-	
+
 	
 	public Estudiante() {
 		super();
@@ -57,14 +55,6 @@ public class Estudiante extends Entidad{
 
 	public void setApellido2(String apellido2) {
 		this.apellido2 = apellido2;
-	}
-
-	public List<ValoracionMateria> getVm() {
-		return vm;
-	}
-
-	public void setVm(List<ValoracionMateria> vm) {
-		this.vm = vm;
 	}
 
 	@Override
