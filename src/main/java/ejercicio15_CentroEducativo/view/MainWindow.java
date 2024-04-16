@@ -21,6 +21,7 @@ import javax.swing.DefaultListModel;
 import javax.swing.JButton;
 import java.awt.GridBagConstraints;
 import java.awt.Insets;
+import java.util.ArrayList;
 import java.util.List;
 import java.awt.Color;
 import javax.swing.JLabel;
@@ -37,6 +38,7 @@ public class MainWindow extends JFrame {
 	private JComboBox<Integer> jcbNota;
 	private JComboBox<Profesor> jcbProfesor;
 	private JComboBox<Materia> jcbMateria;
+	private JButton btnSaveSelected;
 	private JList listaSeleccionado;
 	private JList listaNoSeleccionado;
 	
@@ -49,6 +51,7 @@ public class MainWindow extends JFrame {
 	private Materia matActual;
 	private Profesor profActual;
 	private int notaActual;
+	private Estudiante estActual;
 	
 	/**
 	 * Launch the application.
@@ -153,6 +156,7 @@ public class MainWindow extends JFrame {
 		JButton btnActualizar = new JButton("Botón actualizar alumnado");
 		btnActualizar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
+				btnSaveSelected.setEnabled(true);
 				loadAllEstudiantesInJLists();
 			}
 		});
@@ -268,7 +272,13 @@ public class MainWindow extends JFrame {
 		gbc_listaSeleccionado.gridy = 1;
 		panel.add(listaSeleccionado, gbc_listaSeleccionado);
 		
-		JButton btnSaveSelected = new JButton("Guardar las notas de todos los alumnos seleccionados");
+		btnSaveSelected = new JButton("Guardar las notas de todos los alumnos seleccionados");
+		btnSaveSelected.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				saveStudents();
+			}
+		});
+		btnSaveSelected.setEnabled(false);
 		GridBagConstraints gbc_btnSaveSelected = new GridBagConstraints();
 		gbc_btnSaveSelected.anchor = GridBagConstraints.EAST;
 		gbc_btnSaveSelected.gridx = 0;
@@ -391,6 +401,26 @@ public class MainWindow extends JFrame {
 	}
 	
 	public void saveStudents() {
+		
+		List<Estudiante> selectedStudents = new ArrayList<Estudiante>();
+		
+		for (int i = 0; i < this.listModelEstudiantesSelected.size(); i++) {
+			selectedStudents.add(this.listModelEstudiantesSelected.getElementAt(i));
+		}
+		
+		if (selectedStudents.size() > 0) {
+			for (Estudiante estudiante : selectedStudents) {
+				ValoracionMateria vm = ControladorValoracionMateria
+						.getInstance().findVMByMateriaProfesorAndEstudiante
+						(matActual, profActual, estudiante);
+				if (vm != null) {
+					ControladorValoracionMateria.getInstance().modifyMark(vm, notaActual);
+				} else {
+					ControladorValoracionMateria.getInstance()
+					.insertMark(matActual, profActual, estudiante, notaActual);
+				}
+			}
+		}
 		
 	}
 	

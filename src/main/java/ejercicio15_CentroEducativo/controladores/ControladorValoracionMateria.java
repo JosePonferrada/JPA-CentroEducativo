@@ -64,7 +64,8 @@ public class ControladorValoracionMateria extends SuperControlador{
 		em.persist(vm);
 		em.getTransaction().commit();
 		
-		em.close();
+		//No lo cerramos para poder hacer varias cosas una tras otra
+//		em.close();
 	}
 	
 	public void modifyMark(ValoracionMateria vm, int mark) {
@@ -76,7 +77,8 @@ public class ControladorValoracionMateria extends SuperControlador{
 		em.merge(vm);
 		em.getTransaction().commit();
 		
-		em.close();
+		//No lo cerramos para poder hacer varias cosas una tras otra
+//		em.close();
 	}
 	
 }
