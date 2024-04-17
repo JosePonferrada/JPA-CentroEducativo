@@ -22,13 +22,19 @@ import javax.swing.JButton;
 import java.awt.GridBagConstraints;
 import java.awt.Insets;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.awt.Color;
 import javax.swing.JLabel;
 import javax.swing.JComboBox;
 import javax.swing.JList;
+import javax.swing.JOptionPane;
+
 import java.awt.event.ActionListener;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.awt.event.ActionEvent;
+import javax.swing.JFormattedTextField;
 
 public class MainWindow extends JFrame {
 
@@ -41,6 +47,7 @@ public class MainWindow extends JFrame {
 	private JButton btnSaveSelected;
 	private JList listaSeleccionado;
 	private JList listaNoSeleccionado;
+	private JFormattedTextField jftfFecha; 
 	
 	private List<Estudiante> listAllEstudiantes = 
 			(List<Estudiante>) ControladorEstudiante.getInstance().findAll();
@@ -96,9 +103,9 @@ public class MainWindow extends JFrame {
 		contentPane.add(panel_1, gbc_panel_1);
 		GridBagLayout gbl_panel_1 = new GridBagLayout();
 		gbl_panel_1.columnWidths = new int[]{0, 0, 0};
-		gbl_panel_1.rowHeights = new int[]{0, 0, 0, 0, 0};
+		gbl_panel_1.rowHeights = new int[]{0, 0, 0, 0, 0, 0};
 		gbl_panel_1.columnWeights = new double[]{0.0, 1.0, Double.MIN_VALUE};
-		gbl_panel_1.rowWeights = new double[]{0.0, 0.0, 0.0, 0.0, Double.MIN_VALUE};
+		gbl_panel_1.rowWeights = new double[]{0.0, 0.0, 0.0, 0.0, 0.0, Double.MIN_VALUE};
 		panel_1.setLayout(gbl_panel_1);
 		
 		JLabel lblMateria = new JLabel("Materia:");
@@ -160,10 +167,27 @@ public class MainWindow extends JFrame {
 				loadAllEstudiantesInJLists();
 			}
 		});
+		
+		JLabel lblFecha = new JLabel("Fecha:");
+		GridBagConstraints gbc_lblFecha = new GridBagConstraints();
+		gbc_lblFecha.anchor = GridBagConstraints.EAST;
+		gbc_lblFecha.insets = new Insets(0, 0, 5, 5);
+		gbc_lblFecha.gridx = 0;
+		gbc_lblFecha.gridy = 3;
+		panel_1.add(lblFecha, gbc_lblFecha);
+		
+		jftfFecha = getJFormattedTextFieldDatePersonalizado();
+		GridBagConstraints gbc_jftfFecha = new GridBagConstraints();
+		gbc_jftfFecha.fill = GridBagConstraints.HORIZONTAL;
+		gbc_jftfFecha.anchor = GridBagConstraints.WEST;
+		gbc_jftfFecha.insets = new Insets(0, 0, 5, 420);
+		gbc_jftfFecha.gridx = 1;
+		gbc_jftfFecha.gridy = 3;
+		panel_1.add(jftfFecha, gbc_jftfFecha);
 		GridBagConstraints gbc_btnActualizar = new GridBagConstraints();
 		gbc_btnActualizar.anchor = GridBagConstraints.EAST;
 		gbc_btnActualizar.gridx = 1;
-		gbc_btnActualizar.gridy = 3;
+		gbc_btnActualizar.gridy = 4;
 		panel_1.add(btnActualizar, gbc_btnActualizar);
 		
 		JPanel panel = new JPanel();
@@ -400,9 +424,38 @@ public class MainWindow extends JFrame {
 		
 	}
 	
+	private JFormattedTextField getJFormattedTextFieldDatePersonalizado() {
+		JFormattedTextField jftf = new JFormattedTextField(
+				new JFormattedTextField.AbstractFormatter() {
+			SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+
+			@Override
+			public String valueToString(Object value) throws ParseException {
+				if (value != null && value instanceof Date) {
+					return sdf.format(((Date) value));
+				}
+				return "";
+			}
+
+			@Override
+			public Object stringToValue(String text) throws ParseException {
+				try {
+					return sdf.parse(text);
+				} catch (Exception e) {
+					JOptionPane.showMessageDialog(null, "Error en la fecha");
+					return null;
+				}
+			}
+		});
+		jftf.setValue(new Date());
+		return jftf;
+	}
+	
 	public void saveStudents() {
 		
 		List<Estudiante> selectedStudents = new ArrayList<Estudiante>();
+		
+		Date fechaActual = (Date) this.jftfFecha.getValue();
 		
 		for (int i = 0; i < this.listModelEstudiantesSelected.size(); i++) {
 			selectedStudents.add(this.listModelEstudiantesSelected.getElementAt(i));
@@ -414,11 +467,33 @@ public class MainWindow extends JFrame {
 						.getInstance().findVMByMateriaProfesorAndEstudiante
 						(matActual, profActual, estudiante);
 				if (vm != null) {
-					ControladorValoracionMateria.getInstance().modifyMark(vm, notaActual);
+					ControladorValoracionMateria.getInstance().modifyMark(vm, notaActual, fechaActual);
 				} else {
 					ControladorValoracionMateria.getInstance()
-					.insertMark(matActual, profActual, estudiante, notaActual);
+					.insertMark(matActual, profActual, estudiante, notaActual, fechaActual);
 				}
+			}
+		}
+		
+		//A partir de aquí borraremos los registros aquellos que cuando busquemos con
+		// el filtro y salgan como selected los movamos a no selected.
+		List<Estudiante> notSelectedStudents = new ArrayList<Estudiante>();
+		
+		for (int i = 0; i < this.listModelEstudiantesNotSelected.size(); i++) {
+			notSelectedStudents.add(this.listModelEstudiantesNotSelected.getElementAt(i));
+		}
+		
+		if (notSelectedStudents.size() > 0) {
+			for (Estudiante estudiante : selectedStudents) {
+				ValoracionMateria vm = ControladorValoracionMateria
+						.getInstance().findVMByMateriaProfesorAndEstudiante
+						(matActual, profActual, estudiante);
+				
+				// Borramos llamando al controlador
+				if (vm != null && vm.getValoracion() == this.notaActual) {
+					ControladorValoracionMateria.getInstance().modifyMark(vm, notaActual, fechaActual);
+				}
+				
 			}
 		}
 		

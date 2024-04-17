@@ -1,18 +1,25 @@
 package ejercicio15_CentroEducativo.controladores;
 
+import java.util.Date;
+import java.util.List;
+
 import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
+import javax.persistence.Persistence;
 import javax.persistence.Query;
+import javax.persistence.TypedQuery;
 
 import ejercicio15_CentroEducativo.entities.Estudiante;
 import ejercicio15_CentroEducativo.entities.Materia;
 import ejercicio15_CentroEducativo.entities.Profesor;
 import ejercicio15_CentroEducativo.entities.ValoracionMateria;
 
+
 public class ControladorValoracionMateria extends SuperControlador{
 
 	private static ControladorValoracionMateria instance = null;
 		
-	private String NOMBRE_TABLA = "valoracionmateria";
+	private static String NOMBRE_TABLA = "valoracionmateria";
 	
 	/**
 	 * 
@@ -49,7 +56,7 @@ public class ControladorValoracionMateria extends SuperControlador{
 		}
 	}
 	
-	public void insertMark(Materia materia, Profesor profesor, Estudiante estudiante, int mark) {
+	public void insertMark(Materia materia, Profesor profesor, Estudiante estudiante, int mark, Date fecha) {
 		
 		EntityManager em = getEntityManager();
 		
@@ -59,6 +66,7 @@ public class ControladorValoracionMateria extends SuperControlador{
 		vm.setIdProfesor(profesor.getId());
 		vm.setIdEstudiante(estudiante.getId());
 		vm.setValoracion(mark);
+		vm.setFecha(fecha);
 		
 		em.getTransaction().begin();
 		em.persist(vm);
@@ -68,17 +76,36 @@ public class ControladorValoracionMateria extends SuperControlador{
 //		em.close();
 	}
 	
-	public void modifyMark(ValoracionMateria vm, int mark) {
+	public void modifyMark(ValoracionMateria vm, int mark, Date fecha) {
 		
 		EntityManager em = getEntityManager();
 		
 		em.getTransaction().begin();
 		vm.setValoracion(mark);
+		vm.setFecha(fecha);
 		em.merge(vm);
 		em.getTransaction().commit();
 		
 		//No lo cerramos para poder hacer varias cosas una tras otra
 //		em.close();
+	}
+	
+	private static void deleteEntity (ValoracionMateria vm, int mark) {
+		EntityManagerFactory entityManagerFactory = Persistence.createEntityManagerFactory("CentroEducativo");
+
+		EntityManager em = entityManagerFactory.createEntityManager();
+
+		TypedQuery<ValoracionMateria> q = 
+				em.createQuery("SELECT * FROM " + NOMBRE_TABLA + " where valoracion = " + mark, ValoracionMateria.class);
+		
+		List<ValoracionMateria> valoraciones = q.getResultList();
+		
+		em.getTransaction().begin();
+		em.remove(valoraciones);
+		em.getTransaction().commit();
+		
+		
+		em.close();
 	}
 	
 }

@@ -1,5 +1,7 @@
 package ejercicio15_CentroEducativo.entities;
 
+import java.util.Date;
+
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
@@ -26,6 +28,8 @@ public class ValoracionMateria extends Entidad{
 	private int idMateria;
 	
 	private float valoracion;
+	
+	private Date fecha;
 	
 	public ValoracionMateria() {
 		super();
@@ -69,6 +73,14 @@ public class ValoracionMateria extends Entidad{
 
 	public void setIdMateria(int idMateria) {
 		this.idMateria = idMateria;
+	}
+
+	public Date getFecha() {
+		return fecha;
+	}
+
+	public void setFecha(Date fecha) {
+		this.fecha = fecha;
 	}
 
 	
