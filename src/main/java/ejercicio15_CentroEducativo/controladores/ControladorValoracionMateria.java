@@ -90,22 +90,23 @@ public class ControladorValoracionMateria extends SuperControlador{
 //		em.close();
 	}
 	
-	private static void deleteEntity (ValoracionMateria vm, int mark) {
-		EntityManagerFactory entityManagerFactory = Persistence.createEntityManagerFactory("CentroEducativo");
-
-		EntityManager em = entityManagerFactory.createEntityManager();
-
-		TypedQuery<ValoracionMateria> q = 
-				em.createQuery("SELECT * FROM " + NOMBRE_TABLA + " where valoracion = " + mark, ValoracionMateria.class);
+	public void deleteEntity (ValoracionMateria vm) {
 		
-		List<ValoracionMateria> valoraciones = q.getResultList();
-		
+		EntityManager em = getEntityManager();
+
 		em.getTransaction().begin();
-		em.remove(valoraciones);
+		
+		/*
+		 * Si la entidad no está gestionada nos dará un error porque el EntityManager solo 
+		 * trabaja con entidades gestionadas. El merge hace que esa entidad pase a ser 
+		 * gestionada y por lo tanto que se pueda borrar por el EM
+		 */
+		
+		vm = em.merge(vm);
+		em.remove(vm);
 		em.getTransaction().commit();
 		
 		
-		em.close();
 	}
 	
 }

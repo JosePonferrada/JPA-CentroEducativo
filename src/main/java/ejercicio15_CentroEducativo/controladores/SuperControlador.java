@@ -24,7 +24,7 @@ public class SuperControlador {
 		this.tipoEntidad = tipoEntidad;
 	}
 	
-	protected EntityManager getEntityManager() {
+	protected static EntityManager getEntityManager() {
 		if (em == null) {
 			em = Persistence.createEntityManagerFactory("CentroEducativo").
 					createEntityManager();

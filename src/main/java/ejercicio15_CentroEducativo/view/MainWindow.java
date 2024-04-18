@@ -17,6 +17,7 @@ import ejercicio15_CentroEducativo.entities.ValoracionMateria;
 
 import java.awt.GridBagLayout;
 
+import javax.persistence.EntityManager;
 import javax.swing.DefaultListModel;
 import javax.swing.JButton;
 import java.awt.GridBagConstraints;
@@ -483,19 +484,19 @@ public class MainWindow extends JFrame {
 			notSelectedStudents.add(this.listModelEstudiantesNotSelected.getElementAt(i));
 		}
 		
-		if (notSelectedStudents.size() > 0) {
-			for (Estudiante estudiante : selectedStudents) {
-				ValoracionMateria vm = ControladorValoracionMateria
-						.getInstance().findVMByMateriaProfesorAndEstudiante
-						(matActual, profActual, estudiante);
-				
-				// Borramos llamando al controlador
-				if (vm != null && vm.getValoracion() == this.notaActual) {
-					ControladorValoracionMateria.getInstance().modifyMark(vm, notaActual, fechaActual);
-				}
-				
+	
+		for (Estudiante estudiante : notSelectedStudents) {
+			ValoracionMateria vm = ControladorValoracionMateria
+					.getInstance().findVMByMateriaProfesorAndEstudiante
+					(matActual, profActual, estudiante);
+			
+			// Borramos llamando al controlador
+			if (vm != null && vm.getValoracion() == this.notaActual) {
+				ControladorValoracionMateria.getInstance().deleteEntity(vm);
 			}
+			
 		}
+	
 		
 	}
 	
